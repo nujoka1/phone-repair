@@ -106,7 +106,7 @@ git add .
 git commit -m "Add PhoneHub to Supabase integration"
 
 # Add GitHub remote
-git remote add origin https://github.com/YOUR_USERNAME/phone-repair.git
+git remote add origin https://github.com/nujoka1/phone-repair.git
 
 # Push to GitHub
 git push -u origin main
