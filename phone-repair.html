@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <!-- Character encoding for proper text display -->
+   <meta charset="UTF-8">
+   <!-- Viewport settings for mobile responsiveness -->
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <!-- Page title shown in browser tab -->
+   <title>PhoneHub - Professional Phone Repair Services</title>
+   <!-- Link to external CSS stylesheet for styling -->
+   <link rel="stylesheet" href="phone-repair.css">
+</head>
+<body>
+   <!-- NAVIGATION BAR - Main header with logo and navigation links -->
+   <nav class="navbar">
+      <div class="nav-container">
+         <!-- Logo/Brand Area -->
+         <div class="nav-logo">
+            <h1>📱 PhoneHub</h1>
+            <p class="tagline">Expert Phone Repair Services</p>
+         </div>
+         
+         <!-- Navigation Links -->
+         <ul class="nav-links">
+            <li><a href="#home" class="nav-link active" onclick="showTab('home')">Home</a></li>
+            <li><a href="#services" class="nav-link" onclick="showTab('services')">Services</a></li>
+            <li><a href="#gallery" class="nav-link" onclick="showTab('gallery')">Gallery</a></li>
+            <li><a href="#about" class="nav-link" onclick="showTab('about')">About Us</a></li>
+            <li><a href="#contact" class="nav-link" onclick="showTab('contact')">Contact</a></li>
+            <li><a href="first-supabase.html" class="nav-link register-link">Registration</a></li>
+         </ul>
+      </div>
+   </nav>
+
+   <!-- MAIN CONTAINER -->
+   <div class="container">
+
+      <!-- =========================================
+           HOME TAB - Landing/Welcome Section
+           ========================================= -->
+      <section id="home" class="tab-content active">
+         <div class="hero-section">
+            <div class="hero-content">
+               <h1 class="hero-title">Welcome to PhoneHub</h1>
+               <p class="hero-subtitle">Your Trusted Partner for Professional Phone Repairs</p>
+               <p class="hero-description">
+                  We specialize in repairing all makes and models of smartphones. 
+                  From screen replacements to battery issues, we've got you covered!
+               </p>
+               <button class="cta-button" onclick="showTab('services')">Browse Our Services</button>
+            </div>
+            <!-- Hero Image Placeholder -->
+            <div class="hero-image">
+               <div class="image-placeholder">
+                  📱 Professional Phone Repair<br/>(Hero Image Here)
+               </div>
+            </div>
+         </div>
+
+         <!-- Key Features Section -->
+         <div class="features-section">
+            <div class="feature-card">
+               <div class="feature-icon">⚡</div>
+               <h3>Fast Service</h3>
+               <p>Most repairs completed within 24 hours</p>
+            </div>
+            <div class="feature-card">
+               <div class="feature-icon">🛡️</div>
+               <h3>Warranty</h3>
+               <p>12-month warranty on all repairs</p>
+            </div>
+            <div class="feature-card">
+               <div class="feature-icon">👨‍🔧</div>
+               <h3>Expert Technicians</h3>
+               <p>Certified and experienced professionals</p>
+            </div>
+            <div class="feature-card">
+               <div class="feature-icon">💰</div>
+               <h3>Affordable Prices</h3>
+               <p>Competitive rates for all repair types</p>
+            </div>
+         </div>
+      </section>
+
+      <!-- =========================================
+           SERVICES TAB - Service Offerings
+           ========================================= -->
+      <section id="services" class="tab-content">
+         <h2 class="section-title">Our Repair Services</h2>
+         <p class="section-subtitle">Professional solutions for all your phone problems</p>
+
+         <div class="services-grid">
+            <!-- Service 1: Screen Replacement -->
+            <div class="service-card">
+               <div class="service-icon">🔧</div>
+               <h3>Screen Replacement</h3>
+               <div class="service-image">
+                  <div class="image-placeholder-small">
+                     Screen Repair Image
+                  </div>
+               </div>
+               <p class="service-description">
+                  Cracked or broken screen? We replace all types of damaged displays 
+                  with high-quality original or aftermarket panels.
+               </p>
+               <div class="service-details">
+                  <span class="price">₦15,000 - ₦60,000</span>
+                  <span class="time">⏱️ 2-4 hours</span>
+               </div>
+            </div>
+
+            <!-- Service 2: Battery Replacement -->
+            <div class="service-card">
+               <div class="service-icon">🔋</div>
+               <h3>Battery Replacement</h3>
+               <div class="service-image">
+                  <div class="image-placeholder-small">
+                     Battery Repair Image
+                  </div>
+               </div>
+               <p class="service-description">
+                  Phone dying too fast? We replace worn-out batteries with premium quality 
+                  components to restore your device's battery life.
+               </p>
+               <div class="service-details">
+                  <span class="price">₦6000 - ₦10,000</span>
+                  <span class="time">⏱️ 1-2 hours</span>
+               </div>
+            </div>
+
+            <!-- Service 3: Charging Port Repair -->
+            <div class="service-card">
+               <div class="service-icon">🔌</div>
+               <h3>Charging Port Repair</h3>
+               <div class="service-image">
+                  <div class="image-placeholder-small">
+                     Charging Port Image
+                  </div>
+               </div>
+               <p class="service-description">
+                  Can't charge your phone? We diagnose and repair charging port issues 
+                  including loose connections and water damage.
+               </p>
+               <div class="service-details">
+                  <span class="price">₦12,000 - ₦40,000</span>
+                  <span class="time">⏱️ 2-3 hours</span>
+               </div>
+            </div>
+
+            <!-- Service 4: Speaker & Microphone Repair -->
+            <div class="service-card">
+               <div class="service-icon">🔊</div>
+               <h3>Speaker & Microphone</h3>
+               <div class="service-image">
+                  <div class="image-placeholder-small">
+                     Audio Repair Image
+                  </div>
+               </div>
+               <p class="service-description">
+                  Audio problems affecting your calls? We repair or replace speakers, 
+                  microphones, and earpiece components.
+               </p>
+               <div class="service-details">
+                  <span class="price">₦10,000 - ₦35,000</span>
+                  <span class="time">⏱️ 1-3 hours</span>
+               </div>
+            </div>
+
+            <!-- Service 5: Water Damage Repair -->
+            <div class="service-card">
+               <div class="service-icon">💧</div>
+               <h3>Water Damage Repair</h3>
+               <div class="service-image">
+                  <div class="image-placeholder-small">
+                     Water Damage Image
+                  </div>
+               </div>
+               <p class="service-description">
+                  Dropped your phone in water? We perform professional cleaning and 
+                  restoration to save your device from water damage.
+               </p>
+               <div class="service-details">
+                  <span class="price">₦20,000 - ₦80,000</span>
+                  <span class="time">⏱️ 4-24 hours</span>
+               </div>
+            </div>
+
+            <!-- Service 6: Software & Data Recovery -->
+            <div class="service-card">
+               <div class="service-icon">💾</div>
+               <h3>Software & Data Recovery</h3>
+               <div class="service-image">
+                  <div class="image-placeholder-small">
+                     Data Recovery Image
+                  </div>
+               </div>
+               <p class="service-description">
+                  Lost data or experiencing system issues? We recover lost files and 
+                  fix software problems on your phone.
+               </p>
+               <div class="service-details">
+                  <span class="price">₦15,000 - ₦50,000</span>
+                  <span class="time">⏱️ 1-3 hours</span>
+               </div>
+            </div>
+         </div>
+      </section>
+
+      <!-- =========================================
+           GALLERY TAB - Before & After Gallery
+           ========================================= -->
+      <section id="gallery" class="tab-content">
+         <h2 class="section-title">Our Work Gallery</h2>
+         <p class="section-subtitle">See our professional repairs in action</p>
+
+         <div class="gallery-grid">
+            <!-- Gallery Item 1 -->
+            <div class="gallery-item">
+               <div class="gallery-image before-after">
+                  <div class="before">
+                     <span class="label">Before</span>
+                     <img src="https://via.placeholder.com/250x400/FF6B6B/FFFFFF?text=Cracked+Screen" alt="Damaged iPhone screen" class="gallery-photo">
+                  </div>
+                  <div class="after">
+                     <span class="label">After</span>
+                     <img src="https://via.placeholder.com/250x400/4CAF50/FFFFFF?text=Repaired+Screen" alt="Repaired iPhone screen" class="gallery-photo">
+                  </div>
+               </div>
+               <h3>Screen Replacement</h3>
+               <p>Cracked iPhone 12 screen replaced with new OEM display</p>
+            </div>
+
+            <!-- Gallery Item 2 -->
+            <div class="gallery-item">
+               <div class="gallery-image before-after">
+                  <div class="before">
+                     <span class="label">Before</span>
+                     <img src="https://via.placeholder.com/250x400/FF9800/FFFFFF?text=Broken+Port" alt="Broken charging port" class="gallery-photo">
+                  </div>
+                  <div class="after">
+                     <span class="label">After</span>
+                     <img src="https://via.placeholder.com/250x400/4CAF50/FFFFFF?text=Fixed+Port" alt="Fixed charging port" class="gallery-photo">
+                  </div>
+               </div>
+               <h3>Charging Port Repair</h3>
+               <p>Samsung Galaxy A10 charging port cleaned and repaired</p>
+            </div>
+
+            <!-- Gallery Item 3 -->
+            <div class="gallery-item">
+               <div class="gallery-image before-after">
+                  <div class="before">
+                     <span class="label">Before</span>
+                     <img src="https://via.placeholder.com/250x400/2196F3/FFFFFF?text=Water+Damaged" alt="Water damaged phone" class="gallery-photo">
+                  </div>
+                  <div class="after">
+                     <span class="label">After</span>
+                     <img src="https://via.placeholder.com/250x400/4CAF50/FFFFFF?text=Restored" alt="Restored phone" class="gallery-photo">
+                  </div>
+               </div>
+               <h3>Water Damage Restoration</h3>
+               <p>iPhone XS Max restored after water exposure</p>
+            </div>
+
+            <!-- Gallery Item 4 -->
+            <div class="gallery-item">
+               <div class="gallery-image before-after">
+                  <div class="before">
+                     <span class="label">Before</span>
+                     <img src="https://via.placeholder.com/250x400/9C27B0/FFFFFF?text=Dead+Battery" alt="Dead battery phone" class="gallery-photo">
+                  </div>
+                  <div class="after">
+                     <span class="label">After</span>
+                     <img src="https://via.placeholder.com/250x400/4CAF50/FFFFFF?text=New+Battery" alt="New battery installed" class="gallery-photo">
+                  </div>
+               </div>
+               <h3>Battery Replacement</h3>
+               <p>Google Pixel 5 battery replaced for improved performance</p>
+            </div>
+
+            <!-- Gallery Item 5 -->
+            <div class="gallery-item">
+               <div class="gallery-image before-after">
+                  <div class="before">
+                     <span class="label">Before</span>
+                     <div class="image-placeholder-gallery">Broken Back</div>
+                  </div>
+                  <div class="after">
+                     <span class="label">After</span>
+                     <div class="image-placeholder-gallery">New Back Glass</div>
+                  </div>
+               </div>
+               <h3>Back Glass Replacement</h3>
+               <p>OnePlus 9 back panel replaced with original part</p>
+            </div>
+
+            <!-- Gallery Item 6 -->
+            <div class="gallery-item">
+               <div class="gallery-image before-after">
+                  <div class="before">
+                     <span class="label">Before</span>
+                     <div class="image-placeholder-gallery">No Audio</div>
+                  </div>
+                  <div class="after">
+                     <span class="label">After</span>
+                     <div class="image-placeholder-gallery">Audio Fixed</div>
+                  </div>
+               </div>
+               <h3>Speaker Repair</h3>
+               <p>iPhone 11 speaker replaced due to muffled audio</p>
+            </div>
+         </div>
+      </section>
+
+      <!-- =========================================
+           ABOUT TAB - Company Information
+           ========================================= -->
+      <section id="about" class="tab-content">
+         <h2 class="section-title">About PhoneHub</h2>
+
+         <div class="about-content">
+            <!-- Company Info -->
+            <div class="about-section">
+               <h3>Who We Are</h3>
+               <p>
+                  PhoneHub is a leading mobile device repair service provider dedicated to 
+                  delivering high-quality repairs with exceptional customer service. Founded in 2015, 
+                  we have successfully repaired over 50,000 devices across multiple locations.
+               </p>
+            </div>
+
+            <!-- Our Mission -->
+            <div class="about-section">
+               <h3>Our Mission</h3>
+               <p>
+                  Our mission is to provide fast, reliable, and affordable phone repair services 
+                  while maintaining the highest standards of quality and professionalism. We believe 
+                  that every customer deserves expert care for their valuable devices.
+               </p>
+            </div>
+
+            <!-- Our Story -->
+            <div class="about-section">
+               <h3>Our Story</h3>
+               <p>
+                  Starting as a small repair shop in 2015, PhoneHub has grown into a trusted name 
+                  in phone repairs. Our team of experienced technicians has handled thousands of 
+                  repair cases, from simple screen replacements to complex circuit board repairs. 
+                  We invest in the latest diagnostic equipment and genuine replacement parts to 
+                  ensure your phone gets the best possible care.
+               </p>
+            </div>
+
+            <!-- Why Choose Us -->
+            <div class="about-section">
+               <h3>Why Choose PhoneHub?</h3>
+               <ul class="benefits-list">
+                  <li>✅ <strong>Certified Technicians</strong> - All staff are certified and trained</li>
+                  <li>✅ <strong>Genuine Parts</strong> - We use only original or high-quality components</li>
+                  <li>✅ <strong>Fast Turnaround</strong> - Most repairs completed same-day</li>
+                  <li>✅ <strong>Warranty Coverage</strong> - 12-month warranty on all repairs</li>
+                  <li>✅ <strong>Transparent Pricing</strong> - No hidden charges or surprise fees</li>
+                  <li>✅ <strong>Customer Support</strong> - Dedicated support team available 24/7</li>
+               </ul>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-section">
+               <div class="stat-card">
+                  <h4>50,000+</h4>
+                  <p>Devices Repaired</p>
+               </div>
+               <div class="stat-card">
+                  <h4>8 Years</h4>
+                  <p>In Business</p>
+               </div>
+               <div class="stat-card">
+                  <h4>98%</h4>
+                  <p>Customer Satisfaction</p>
+               </div>
+               <div class="stat-card">
+                  <h4>24-48hr</h4>
+                  <p>Average Turnaround</p>
+               </div>
+            </div>
+
+            <!-- Meet Our Founder/Co-Founder Section -->
+            <div class="founder-section">
+               <h3>Meet Our Founder & Co-Founder</h3>
+               <div class="founder-card">
+                  <div class="founder-image">
+                     <img src="me.jpg" alt="Founder and Co-Founder of PhoneHub" class="founder-photo">
+                  </div>
+                  <div class="founder-info">
+                     <h4>Passionate Leaders in Phone Repair</h4>
+                     <p>
+                        With years of experience in the mobile device repair industry, our founder and co-founder 
+                        have built PhoneHub on the principles of excellence, integrity, and customer satisfaction. 
+                        Their vision transformed a small repair shop into a trusted brand serving thousands of happy customers.
+                     </p>
+                     <p>
+                        <strong>Dedicated to:</strong> Innovation in repair techniques, Quality assurance, 
+                        Customer excellence, and Industry leadership.
+                     </p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+
+      <!-- =========================================
+           CONTACT TAB - Contact Information & Form
+           ========================================= -->
+      <section id="contact" class="tab-content">
+         <h2 class="section-title">Contact Us</h2>
+
+         <div class="contact-container">
+            <!-- Contact Information -->
+            <div class="contact-info">
+               <h3>📍 Visit Our Store</h3>
+               <div class="contact-detail">
+                  <strong>Address:</strong>
+                  <p>123 Tech Street<br/>Downtown Plaza, Suite 100<br/>Tech City, TC 12345</p>
+               </div>
+
+               <h3>📞 Call Us</h3>
+               <div class="contact-detail">
+                  <strong>Phone:</strong>
+                  <p><a href="tel:+1234567890">+1 (234) 567-8900</a></p>
+               </div>
+
+               <h3>📧 Email Us</h3>
+               <div class="contact-detail">
+                  <strong>Email:</strong>
+                  <p><a href="mailto:info@phonehub.com">info@phonehub.com</a></p>
+               </div>
+
+               <h3>⏰ Business Hours</h3>
+               <div class="contact-detail">
+                  <p>
+                     Monday - Friday: 9:00 AM - 8:00 PM<br/>
+                     Saturday: 10:00 AM - 6:00 PM<br/>
+                     Sunday: 11:00 AM - 4:00 PM
+                  </p>
+               </div>
+
+               <!-- Map Placeholder -->
+               <div class="map-placeholder">
+                  🗺️ Map Location Goes Here
+               </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form-section">
+               <h3>Send Us a Message</h3>
+               <form id="contactForm" class="contact-form">
+                  <!-- Name Field -->
+                  <div class="form-group">
+                     <label for="contact-name">Name:</label>
+                     <input type="text" id="contact-name" name="name" placeholder="Your full name" required>
+                  </div>
+
+                  <!-- Email Field -->
+                  <div class="form-group">
+                     <label for="contact-email">Email:</label>
+                     <input type="email" id="contact-email" name="email" placeholder="Your email address" required>
+                  </div>
+
+                  <!-- Phone Field -->
+                  <div class="form-group">
+                     <label for="contact-phone">Phone:</label>
+                     <input type="tel" id="contact-phone" name="phone" placeholder="Your phone number" required>
+                  </div>
+
+                  <!-- Subject Field -->
+                  <div class="form-group">
+                     <label for="contact-subject">Subject:</label>
+                     <select id="contact-subject" name="subject" required>
+                        <option value="">Select a subject</option>
+                        <option value="repair-inquiry">Repair Inquiry</option>
+                        <option value="pricing">Pricing Question</option>
+                        <option value="warranty">Warranty Info</option>
+                        <option value="other">Other</option>
+                     </select>
+                  </div>
+
+                  <!-- Message Field -->
+                  <div class="form-group">
+                     <label for="contact-message">Message:</label>
+                     <textarea id="contact-message" name="message" placeholder="Your message..." rows="5" required></textarea>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <button type="submit" class="submit-btn">Send Message</button>
+               </form>
+               <div id="contactMessage" class="contact-message"></div>
+            </div>
+         </div>
+      </section>
+
+   </div>
+
+   <!-- FOOTER -->
+   <footer class="footer">
+      <div class="footer-content">
+         <div class="footer-section">
+            <h4>PhoneHub</h4>
+            <p>Professional Phone Repair Services</p>
+         </div>
+         <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+               <li><a href="#home" onclick="showTab('home')">Home</a></li>
+               <li><a href="#services" onclick="showTab('services')">Services</a></li>
+               <li><a href="#contact" onclick="showTab('contact')">Contact</a></li>
+            </ul>
+         </div>
+         <div class="footer-section">
+            <h4>Connect</h4>
+            <p>
+               <a href="#" class="social-link">Facebook</a> | 
+               <a href="#" class="social-link">Instagram</a> | 
+               <a href="#" class="social-link">Twitter</a>
+            </p>
+         </div>
+      </div>
+      <div class="footer-bottom">
+         <p>&copy; 2026 PhoneHub. All rights reserved. | <a href="first.html">Back to Registration</a></p>
+      </div>
+   </footer>
+
+   <!-- JAVASCRIPT - Tab Navigation and Form Handling -->
+   <script>
+      /**
+       * Show/Hide Tabs
+       * Displays selected tab and hides others
+       */
+      function showTab(tabName) {
+         // Hide all tab contents
+         const tabs = document.querySelectorAll('.tab-content');
+         tabs.forEach(tab => {
+            tab.classList.remove('active');
+         });
+
+         // Remove active state from all nav links
+         const navLinks = document.querySelectorAll('.nav-link');
+         navLinks.forEach(link => {
+            link.classList.remove('active');
+         });
+
+         // Show selected tab
+         const selectedTab = document.getElementById(tabName);
+         if (selectedTab) {
+            selectedTab.classList.add('active');
+         }
+
+         // Add active state to clicked nav link
+         event.target.classList.add('active');
+
+         // Scroll to top
+         window.scrollTo(0, 0);
+      }
+
+      /**
+       * Contact Form Submission
+       * Handles form submission and displays confirmation
+       */
+      const contactForm = document.getElementById('contactForm');
+      const contactMessage = document.getElementById('contactMessage');
+
+      if (contactForm) {
+         contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = {
+               name: document.getElementById('contact-name').value,
+               email: document.getElementById('contact-email').value,
+               phone: document.getElementById('contact-phone').value,
+               subject: document.getElementById('contact-subject').value,
+               message: document.getElementById('contact-message').value,
+               submittedAt: new Date().toLocaleString()
+            };
+
+            // Show success message
+            contactMessage.textContent = ' Thank you for your message! We will get back to you within 24 hours.';
+            contactMessage.style.display = 'block';
+            contactMessage.style.color = '#155724';
+            console.log('Contact form submitted:', formData);
+
+            // Reset form
+            contactForm.reset();
+
+            // Hide message after 5 seconds
+            setTimeout(() => {
+               contactMessage.style.display = 'none';
+            }, 5000);
+         });
+      }
+
+      /**
+       * Set default active tab
+       * Shows home tab on page load
+       */
+      window.addEventListener('load', () => {
+         console.log('PhoneHub website loaded successfully');
+      });
+   </script>
+</body>
+</html>

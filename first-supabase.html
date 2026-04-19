@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <!-- Character encoding for proper text display -->
+   <meta charset="UTF-8">
+   <!-- Viewport settings for mobile responsiveness -->
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <!-- Page title shown in browser tab -->
+   <title>PhoneHub - Service Request Form</title>
+   <!-- Link to external CSS stylesheet for styling -->
+   <link rel="stylesheet" href="style.css">
+   <!-- Supabase JavaScript SDK -->
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+   <style>
+      /* Admin Modal Styles */
+      .modal {
+         position: fixed;
+         z-index: 1000;
+         left: 0;
+         top: 0;
+         width: 100%;
+         height: 100%;
+         background-color: rgba(0, 0, 0, 0.5);
+         display: flex;
+         align-items: center;
+         justify-content: center;
+      }
+      
+      .modal-content {
+         background-color: #fefefe;
+         padding: 30px;
+         border: 1px solid #888;
+         border-radius: 10px;
+         width: 90%;
+         max-width: 400px;
+         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+         text-align: center;
+      }
+      
+      .modal-content h3 {
+         margin-top: 0;
+         color: #333;
+      }
+      
+      .modal-content p {
+         margin: 15px 0;
+         color: #666;
+      }
+
+      /* Edit button styling */
+      .edit-btn {
+         background-color: #2196F3;
+         color: white;
+         border: none;
+         padding: 8px 12px;
+         border-radius: 5px;
+         cursor: pointer;
+         font-size: 14px;
+         margin-right: 5px;
+      }
+
+      .edit-btn:hover {
+         background-color: #0b7dda;
+      }
+   </style>
+</head>
+<body>
+   <!-- Main container with max-width and centered alignment -->
+   <div class="container">
+      <!-- HEADER SECTION - Logo and Navigation -->
+      <header>
+         <h1>🔧 PhoneHub Service Request</h1>
+         <p class="tagline">Book Your Phone Repair Appointment</p>
+         <!-- Link to PhoneHub Repair Website -->
+         <div class="header-links">
+            <a href="phone-repair.html" class="link phone-hub-link">← Back to PhoneHub</a>
+         </div>
+      </header>
+
+      <!-- MAIN CONTENT AREA -->
+      <main>
+         <!-- REGISTRATION FORM SECTION -->
+         <section class="form-section">
+            <h2>📱 Service Request Form</h2>
+            <!-- Success/Error message display area (hidden by default) -->
+            <div id="successMessage" class="success-message"></div>
+            
+            <!-- Form with ID for JavaScript reference -->
+            <form id="registrationForm" method="POST" onsubmit="return false;" novalidate>
+               <!-- Name Input Field -->
+               <div class="form-group">
+                  <label for="firstname">Full Name:</label>
+                  <input type="text" id="firstname" name="firstname" placeholder="Enter your full name" class="input-field" required>
+               </div>
+
+               <!-- Email Input Field (HTML5 email validation) -->
+               <div class="form-group">
+                  <label for="email">Email Address:</label>
+                  <input type="email" id="email" name="email" placeholder="Enter your email" class="input-field" required>
+               </div>
+
+               <!-- Phone Number Input Field -->
+               <div class="form-group">
+                  <label for="tel">Contact Phone:</label>
+                  <input type="tel" id="tel" name="tel" placeholder="Enter your phone number" class="input-field" required>
+               </div>
+
+               <!-- Device Type Dropdown -->
+               <div class="form-group">
+                  <label for="devicetype">Device Type:</label>
+                  <select id="devicetype" name="devicetype" class="input-field" required>
+                     <option value="">-- Select Device Type --</option>
+                     <option value="iPhone">iPhone</option>
+                     <option value="Samsung">Samsung</option>
+                     <option value="Google Pixel">Google Pixel</option>
+                     <option value="OnePlus">OnePlus</option>
+                     <option value="Xiaomi">Xiaomi</option>
+                     <option value="Other">Other</option>
+                  </select>
+               </div>
+
+               <!-- Device Model & Year -->
+               <div class="form-group">
+                  <label for="devicemodel">Device Model & Year:</label>
+                  <input type="text" id="devicemodel" name="devicemodel" placeholder="e.g., iPhone 14 Pro, Samsung S23" class="input-field" required>
+               </div>
+
+               <!-- Repair Type Dropdown -->
+               <div class="form-group">
+                  <label for="repairtype">Type of Repair Needed:</label>
+                  <select id="repairtype" name="repairtype" class="input-field" required>
+                     <option value="">-- Select Repair Type --</option>
+                     <option value="Screen">Screen Replacement</option>
+                     <option value="Battery">Battery Replacement</option>
+                     <option value="Water Damage">Water Damage</option>
+                     <option value="Charging Port">Charging Port</option>
+                     <option value="Speaker">Speaker</option>
+                     <option value="Button">Button</option>
+                     <option value="Other">Other</option>
+                  </select>
+               </div>
+
+               <!-- Issue Description -->
+               <div class="form-group">
+                  <label for="description">Describe the Issue:</label>
+                  <textarea id="description" name="description" placeholder="Describe the problem with your phone..." class="input-field" rows="4" required></textarea>
+               </div>
+
+               <!-- Service Date -->
+               <div class="form-group">
+                  <label for="servicedate">Preferred Service Date:</label>
+                  <input type="date" id="servicedate" name="servicedate" class="input-field" required>
+               </div>
+
+               <!-- Submit Button -->
+               <button type="submit" class="submit-button">📋 Book Appointment</button>
+            </form>
+         </section>
+
+         <!-- ADMIN LOGIN MODAL -->
+         <div id="adminModal" class="modal" style="display:none;">
+            <div class="modal-content">
+               <h3>🔐 Admin Access Required</h3>
+               <p>Enter the admin password to view all requests:</p>
+               <input type="password" id="adminPassword" placeholder="Enter admin password" class="input-field" style="margin: 10px 0;">
+               <div style="display: flex; gap: 10px; justify-content: center;">
+                  <button id="adminSubmitBtn" class="submit-button">Unlock</button>
+                  <button id="adminCancelBtn" class="submit-button" style="background-color: #666;">Cancel</button>
+               </div>
+               <p id="adminError" style="color: #c62828; text-align: center; margin-top: 10px; display: none;">❌ Incorrect password</p>
+            </div>
+         </div>
+
+         <!-- USER VIEW OWN REQUESTS MODAL -->
+         <div id="userLookupModal" class="modal" style="display:none;">
+            <div class="modal-content">
+               <h3>📋 View My Service Requests</h3>
+               <p>Enter your email address to view and edit your service requests:</p>
+               <input type="email" id="userEmail" placeholder="Enter your email address" class="input-field" style="margin: 10px 0;">
+               <div style="display: flex; gap: 10px; justify-content: center;">
+                  <button id="userSearchBtn" class="submit-button">Search</button>
+                  <button id="userCancelBtn" class="submit-button" style="background-color: #666;">Cancel</button>
+               </div>
+               <p id="userError" style="color: #c62828; text-align: center; margin-top: 10px; display: none;"></p>
+            </div>
+         </div>
+
+         <!-- EDIT REQUEST MODAL -->
+         <div id="editModal" class="modal" style="display:none;">
+            <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
+               <h3>✏️ Edit Service Request</h3>
+               <form id="editForm" style="text-align: left;">
+                  <div class="form-group">
+                     <label for="editFirstname">Full Name:</label>
+                     <input type="text" id="editFirstname" class="input-field" required>
+                  </div>
+                  <div class="form-group">
+                     <label for="editEmail">Email:</label>
+                     <input type="email" id="editEmail" class="input-field" required disabled>
+                  </div>
+                  <div class="form-group">
+                     <label for="editPhone">Phone:</label>
+                     <input type="tel" id="editPhone" class="input-field" required>
+                  </div>
+                  <div class="form-group">
+                     <label for="editDeviceType">Device Type:</label>
+                     <select id="editDeviceType" class="input-field" required>
+                        <option value="">-- Select Device Type --</option>
+                        <option value="iPhone">iPhone</option>
+                        <option value="Samsung">Samsung</option>
+                        <option value="Google Pixel">Google Pixel</option>
+                        <option value="OnePlus">OnePlus</option>
+                        <option value="Xiaomi">Xiaomi</option>
+                        <option value="Other">Other</option>
+                     </select>
+                  </div>
+                  <div class="form-group">
+                     <label for="editDeviceModel">Device Model & Year:</label>
+                     <input type="text" id="editDeviceModel" class="input-field" required>
+                  </div>
+                  <div class="form-group">
+                     <label for="editRepairType">Repair Type:</label>
+                     <select id="editRepairType" class="input-field" required>
+                        <option value="">-- Select Repair Type --</option>
+                        <option value="Screen">Screen Replacement</option>
+                        <option value="Battery">Battery Replacement</option>
+                        <option value="Water Damage">Water Damage</option>
+                        <option value="Charging Port">Charging Port</option>
+                        <option value="Speaker">Speaker</option>
+                        <option value="Button">Button</option>
+                        <option value="Other">Other</option>
+                     </select>
+                  </div>
+                  <div class="form-group">
+                     <label for="editDescription">Description:</label>
+                     <textarea id="editDescription" class="input-field" rows="4" required></textarea>
+                  </div>
+                  <div class="form-group">
+                     <label for="editServiceDate">Preferred Service Date:</label>
+                     <input type="date" id="editServiceDate" class="input-field" required>
+                  </div>
+                  <div style="display: flex; gap: 10px; justify-content: center;">
+                     <button type="button" id="editSaveBtn" class="submit-button">Save Changes</button>
+                     <button type="button" id="editCancelBtn" class="submit-button" style="background-color: #666;">Cancel</button>
+                  </div>
+               </form>
+            </div>
+         </div>
+
+         <!-- CONTROL BUTTONS SECTION -->
+         <section class="controls-section">
+            <div class="button-group">
+               <button id="myRequestsBtn" class="action-button" style="background-color: #2196F3;">📝 My Service Requests</button>
+               <button id="viewDataBtn" class="action-button">👁️ View All Requests</button>
+               <button id="logoutBtn" class="action-button" style="display:none; background-color: #ff9800;">🔓 Logout Admin</button>
+               <button id="clearDataBtn" class="action-button clear-button">🗑️ Clear All Requests</button>
+            </div>
+            <!-- Record count display -->
+            <p id="recordCount" class="record-count">Total Requests: 0</p>
+         </section>
+
+         <!-- DATA DISPLAY SECTION -->
+         <section class="data-section">
+            <h3>📊 Service Requests</h3>
+            <div id="dataContainer"></div>
+         </section>
+      </main>
+
+      <!-- FOOTER -->
+      <footer>
+         <p>© 2024 PhoneHub - Professional Phone Repair Services | All Rights Reserved</p>
+      </footer>
+   </div>
+
+   <script>
+      // Global variables accessible to onclick handlers
+      let globalSupabase;
+      let globalSuccessMessage;
+      
+      // Admin settings
+      const ADMIN_PASSWORD = 'Phone@Hub2026'; // Change this to your desired password
+      let isAdminLoggedIn = false;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("✅ DOMContentLoaded fired - initializing");
+
+        // Supabase credentials and client (SCOPED TO DOMContentLoaded - only initializes once)
+        const SUPABASE_URL = 'https://vgiouxvglscqaejaonet.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnaW91eHZnbHNjcWFlamFvbmV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NDc1MTYsImV4cCI6MjA5MjEyMzUxNn0.FbMng6ZCjz6fYVXUvEbrac6xT5PzQqyVP3n4faRz9YM';
+        const { createClient } = window.supabase;
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Store in global scope for onclick handlers
+        globalSupabase = supabase;
+
+        console.log("✅ Supabase client created");
+
+        const form = document.getElementById("registrationForm");
+        const successMessage = document.getElementById("successMessage");
+
+        // Store in global scope for onclick handlers
+        globalSuccessMessage = successMessage;
+
+        console.log("📌 Form found:", form ? "YES" : "NO");
+        console.log("📌 Success message element found:", successMessage ? "YES" : "NO");
+
+        // Form submit handler (ONLY method needed)
+        form.addEventListener("submit", async (e) => {
+          console.log("🔴 FORM SUBMIT FIRED");
+          e.preventDefault();
+          e.stopPropagation();
+          await handleFormSubmit(form, supabase, successMessage);
+        });
+        console.log("✅ Form submit listener attached");
+
+        // View All Records button - Now shows password modal
+        document.getElementById('viewDataBtn').addEventListener('click', () => {
+          if (isAdminLoggedIn) {
+            displayAllRecords(supabase);
+          } else {
+            showAdminModal();
+          }
+        });
+
+        // My Requests button
+        document.getElementById('myRequestsBtn').addEventListener('click', () => {
+          showUserLookupModal();
+        });
+
+        // Logout button
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+          logoutAdmin();
+        });
+
+        // Admin Modal handlers
+        document.getElementById('adminSubmitBtn').addEventListener('click', () => {
+          checkAdminPassword();
+        });
+
+        document.getElementById('adminCancelBtn').addEventListener('click', () => {
+          closeAdminModal();
+        });
+
+        // Allow Enter key to submit password
+        document.getElementById('adminPassword').addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            checkAdminPassword();
+          }
+        });
+
+        // User Lookup Modal handlers
+        document.getElementById('userSearchBtn').addEventListener('click', () => {
+          searchUserRequests();
+        });
+
+        document.getElementById('userCancelBtn').addEventListener('click', () => {
+          closeUserLookupModal();
+        });
+
+        // User email Enter key
+        document.getElementById('userEmail').addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            searchUserRequests();
+          }
+        });
+
+        // Edit Modal handlers
+        document.getElementById('editSaveBtn').addEventListener('click', () => {
+          updateUserRequest();
+        });
+
+        document.getElementById('editCancelBtn').addEventListener('click', () => {
+          closeEditModal();
+        });
+
+        // Clear Database button with confirmation
+        document.getElementById('clearDataBtn').addEventListener('click', () => {
+          if (confirm('Are you sure you want to delete all service requests? This cannot be undone.')) {
+            clearDatabase(supabase, successMessage);
+          }
+        });
+
+        // Initialize record count
+        updateRecordCount(supabase);
+      });
+
+      async function handleFormSubmit(form, supabase, successMessage) {
+        try {
+          console.log("🚀 handleFormSubmit() called");
+
+          const formData = {
+            firstname: form.firstname.value,
+            email: form.email.value,
+            tel: form.tel.value,
+            devicetype: form.devicetype.value,
+            devicemodel: form.devicemodel.value,
+            repairtype: form.repairtype.value,
+            description: form.description.value,
+            servicedate: form.servicedate.value
+          };
+
+          console.log("📦 Form data collected:", formData);
+
+          console.log("🌐 Sending to Supabase...");
+          const { data, error } = await supabase
+            .from("service_requests")
+            .insert([formData]);
+
+          if (error) {
+            console.error("❌ Supabase error:", error);
+            throw error;
+          }
+
+          console.log("✅ Data saved successfully:", data);
+
+          successMessage.textContent = "✅ Service request submitted successfully! We will contact you soon to confirm your appointment.";
+          successMessage.style.display = "block";
+          successMessage.style.color = "#2e7d32";
+
+          form.reset();
+          updateRecordCount(supabase);
+
+          setTimeout(() => {
+            successMessage.style.display = "none";
+          }, 5000);
+
+        } catch (err) {
+          console.error("❌ ERROR:", err.message, err);
+          successMessage.textContent = "❌ Failed to submit: " + err.message;
+          successMessage.style.display = "block";
+          successMessage.style.color = "#c62828";
+        }
+      }
+
+      /**
+       * Retrieve all records from Supabase
+       * Returns a promise with all records
+       */
+      async function getAllRecords(supabase) {
+         try {
+            const { data, error } = await supabase
+               .from('service_requests')
+               .select('*')
+               .order('id', { ascending: false });
+
+            if (error) throw error;
+            return data || [];
+         } catch (error) {
+            console.error('Error retrieving records:', error.message);
+            return [];
+         }
+      }
+
+      /**
+       * Delete a specific record by ID
+       * @param {number} id - The record ID to delete
+       */
+      async function deleteRecord(id) {
+         try {
+            console.log('🗑️ Attempting to delete record ID:', id);
+            
+            // Check record exists BEFORE delete
+            const { data: beforeDelete, error: beforeError } = await globalSupabase
+               .from('service_requests')
+               .select('id')
+               .eq('id', id)
+               .single();
+            
+            if (beforeError) {
+               console.error('❌ Record not found before delete:', beforeError.message);
+               throw new Error('Record not found');
+            }
+            console.log('✅ Record exists before delete:', beforeDelete);
+            
+            // Perform delete
+            const { data: deleteData, error: deleteError } = await globalSupabase
+               .from('service_requests')
+               .delete()
+               .eq('id', id)
+               .select(); // Add select() to get count of deleted rows
+            
+            if (deleteError) {
+               console.error('❌ DELETE ERROR:', deleteError.message, deleteError);
+               throw deleteError;
+            }
+
+            console.log('✅ Delete response:', deleteData);
+            console.log('🔍 Rows deleted count:', deleteData?.length || 0);
+            
+            // Wait a moment for database to sync
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Verify deletion
+            const { data: afterDelete, error: afterError } = await globalSupabase
+               .from('service_requests')
+               .select('id')
+               .eq('id', id);
+            
+            if (afterError) {
+               console.error('❌ Error verifying delete:', afterError.message);
+            } else {
+               console.log('🔍 Record after delete query:', afterDelete);
+               if (afterDelete.length === 0) {
+                  console.log('✅✅✅ DELETE CONFIRMED - Record no longer exists in DB');
+               } else {
+                  console.warn('⚠️ WARNING - Record still exists after delete!', afterDelete);
+               }
+            }
+            
+            await displayAllRecords(globalSupabase);
+            await updateRecordCount(globalSupabase);
+            
+            globalSuccessMessage.textContent = '✅ Record deleted successfully!';
+            globalSuccessMessage.style.display = 'block';
+            globalSuccessMessage.style.color = '#2e7d32';
+            setTimeout(() => {
+              globalSuccessMessage.style.display = 'none';
+            }, 3000);
+         } catch (error) {
+            console.error('❌ Error deleting record:', error.message);
+            globalSuccessMessage.textContent = '❌ Failed to delete: ' + error.message;
+            globalSuccessMessage.style.display = 'block';
+            globalSuccessMessage.style.color = '#c62828';
+         }
+      }
+
+      /**
+       * Clear all records from database
+       * Shows confirmation dialog before clearing
+       */
+      async function clearDatabase(supabase, successMessage) {
+         try {
+            const { error } = await supabase
+               .from('service_requests')
+               .delete()
+               .neq('id', 0); // Delete all records
+
+            if (error) throw error;
+
+            console.log('Database cleared');
+            document.getElementById('dataContainer').innerHTML = ''; // Clear display
+            updateRecordCount(supabase); // Reset counter
+            successMessage.textContent = 'All service requests cleared successfully!';
+            successMessage.style.display = 'block';
+            successMessage.style.color = '#17a2b8';
+            
+            // Hide message after 3 seconds
+            setTimeout(() => {
+               successMessage.style.display = 'none';
+            }, 3000);
+         } catch (error) {
+            console.error('Error clearing database:', error.message);
+         }
+      }
+
+      /**
+       * Update the total record count display
+       */
+      async function updateRecordCount(supabase) {
+         console.log('🔄 updateRecordCount() called');
+         const records = await getAllRecords(supabase);
+         document.getElementById('recordCount').textContent = `Total Requests: ${records.length}`;
+         console.log('✅ Record count updated:', records.length);
+      }
+
+      /**
+       * Fetch all records and display in a table
+       */
+      async function displayAllRecords(supabase) {
+         console.log('🔄 displayAllRecords() called');
+         const container = document.getElementById('dataContainer');
+         const records = await getAllRecords(supabase);
+         console.log('📊 Records fetched:', records.length);
+
+         // Show message if no records exist
+         if (records.length === 0) {
+            container.innerHTML = '<p class="no-data">No service requests found. Submit the form to add a request.</p>';
+            console.log('✅ Table updated - no records');
+            return;
+         }
+
+         // Build HTML table with phone repair service fields
+         let tableHTML = '<table class="records-table"><thead><tr>';
+         tableHTML += '<th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Device</th><th>Model</th><th>Repair Type</th><th>Service Date</th><th>Submitted</th><th>Action</th>';
+         tableHTML += '</tr></thead><tbody>';
+
+         // Add each record as a table row
+         records.forEach(record => {
+            const submittedDate = new Date(record.created_at).toLocaleString();
+            tableHTML += `<tr>
+               <td>${record.id}</td>
+               <td>${record.firstname}</td>
+               <td>${record.email}</td>
+               <td>${record.tel}</td>
+               <td>${record.devicetype}</td>
+               <td>${record.devicemodel}</td>
+               <td>${record.repairtype}</td>
+               <td>${record.servicedate}</td>
+               <td>${submittedDate}</td>
+               <td><button class="delete-btn" onclick="deleteRecord(${record.id})">Delete</button></td>
+            </tr>`;
+         });
+
+         tableHTML += '</tbody></table>';
+         container.innerHTML = tableHTML; // Display the table
+         console.log('✅ Table updated with', records.length, 'records');
+      }
+
+      /**
+       * Admin Functions
+       */
+
+      function showAdminModal() {
+         document.getElementById('adminModal').style.display = 'flex';
+         document.getElementById('adminPassword').value = '';
+         document.getElementById('adminError').style.display = 'none';
+         document.getElementById('adminPassword').focus();
+      }
+
+      function closeAdminModal() {
+         document.getElementById('adminModal').style.display = 'none';
+         document.getElementById('adminPassword').value = '';
+         document.getElementById('adminError').style.display = 'none';
+      }
+
+      function checkAdminPassword() {
+         const enteredPassword = document.getElementById('adminPassword').value;
+         const errorMsg = document.getElementById('adminError');
+
+         if (enteredPassword === ADMIN_PASSWORD) {
+            isAdminLoggedIn = true;
+            console.log('✅ Admin logged in successfully');
+            
+            // Update UI
+            document.getElementById('viewDataBtn').textContent = '👁️ View All Requests (Admin)';
+            document.getElementById('viewDataBtn').style.backgroundColor = '#4CAF50';
+            document.getElementById('logoutBtn').style.display = 'block';
+            
+            closeAdminModal();
+            displayAllRecords(globalSupabase);
+         } else {
+            errorMsg.style.display = 'block';
+            document.getElementById('adminPassword').value = '';
+            console.warn('❌ Incorrect admin password');
+         }
+      }
+
+      function logoutAdmin() {
+         isAdminLoggedIn = false;
+         console.log('🔓 Admin logged out');
+         
+         // Update UI
+         document.getElementById('viewDataBtn').textContent = '👁️ View All Requests';
+         document.getElementById('viewDataBtn').style.backgroundColor = '';
+         document.getElementById('logoutBtn').style.display = 'none';
+         
+         // Clear the table
+         document.getElementById('dataContainer').innerHTML = '';
+      }
+
+      /**
+       * User View/Edit Functions
+       */
+
+      function showUserLookupModal() {
+         document.getElementById('userLookupModal').style.display = 'flex';
+         document.getElementById('userEmail').value = '';
+         document.getElementById('userError').style.display = 'none';
+         document.getElementById('userEmail').focus();
+      }
+
+      function closeUserLookupModal() {
+         document.getElementById('userLookupModal').style.display = 'none';
+         document.getElementById('userEmail').value = '';
+         document.getElementById('userError').style.display = 'none';
+      }
+
+      async function searchUserRequests() {
+         try {
+            const userEmail = document.getElementById('userEmail').value.trim();
+            const errorMsg = document.getElementById('userError');
+
+            if (!userEmail) {
+               errorMsg.textContent = '❌ Please enter your email address';
+               errorMsg.style.display = 'block';
+               return;
+            }
+
+            // Fetch user's requests
+            const { data, error } = await globalSupabase
+               .from('service_requests')
+               .select('*')
+               .eq('email', userEmail)
+               .order('id', { ascending: false });
+
+            if (error) throw error;
+
+            if (data.length === 0) {
+               errorMsg.textContent = '❌ No service requests found for this email';
+               errorMsg.style.display = 'block';
+               return;
+            }
+
+            console.log(`✅ Found ${data.length} request(s) for ${userEmail}`);
+            displayUserRequests(data);
+            closeUserLookupModal();
+         } catch (error) {
+            document.getElementById('userError').textContent = '❌ Error: ' + error.message;
+            document.getElementById('userError').style.display = 'block';
+            console.error('Error searching requests:', error);
+         }
+      }
+
+      function displayUserRequests(records) {
+         const container = document.getElementById('dataContainer');
+         
+         if (records.length === 0) {
+            container.innerHTML = '<p class="no-data">No service requests found.</p>';
+            return;
+         }
+
+         // Build table for user's own requests
+         let tableHTML = '<table class="records-table"><thead><tr>';
+         tableHTML += '<th>ID</th><th>Device</th><th>Repair Type</th><th>Service Date</th><th>Submitted</th><th>Actions</th>';
+         tableHTML += '</tr></thead><tbody>';
+
+         records.forEach(record => {
+            const submittedDate = new Date(record.created_at).toLocaleString();
+            tableHTML += `<tr>
+               <td>${record.id}</td>
+               <td>${record.devicetype} - ${record.devicemodel}</td>
+               <td>${record.repairtype}</td>
+               <td>${record.servicedate}</td>
+               <td>${submittedDate}</td>
+               <td>
+                  <button class="delete-btn" onclick="editUserRequest(${record.id})" style="background-color: #2196F3; color: white;">Edit</button>
+               </td>
+            </tr>`;
+         });
+
+         tableHTML += '</tbody></table>';
+         container.innerHTML = tableHTML;
+      }
+
+      // Store current record being edited
+      let currentEditingRecord = null;
+
+      async function editUserRequest(recordId) {
+         try {
+            // Fetch the specific record
+            const { data, error } = await globalSupabase
+               .from('service_requests')
+               .select('*')
+               .eq('id', recordId)
+               .single();
+
+            if (error) throw error;
+
+            currentEditingRecord = data;
+
+            // Populate edit form
+            document.getElementById('editFirstname').value = data.firstname;
+            document.getElementById('editEmail').value = data.email;
+            document.getElementById('editPhone').value = data.tel;
+            document.getElementById('editDeviceType').value = data.devicetype;
+            document.getElementById('editDeviceModel').value = data.devicemodel;
+            document.getElementById('editRepairType').value = data.repairtype;
+            document.getElementById('editDescription').value = data.description;
+            document.getElementById('editServiceDate').value = data.servicedate;
+
+            document.getElementById('editModal').style.display = 'flex';
+         } catch (error) {
+            globalSuccessMessage.textContent = '❌ Error loading request: ' + error.message;
+            globalSuccessMessage.style.display = 'block';
+            globalSuccessMessage.style.color = '#c62828';
+            console.error('Error loading record:', error);
+         }
+      }
+
+      function closeEditModal() {
+         document.getElementById('editModal').style.display = 'none';
+         currentEditingRecord = null;
+      }
+
+      async function updateUserRequest() {
+         try {
+            if (!currentEditingRecord) return;
+
+            const updatedData = {
+               firstname: document.getElementById('editFirstname').value,
+               tel: document.getElementById('editPhone').value,
+               devicetype: document.getElementById('editDeviceType').value,
+               devicemodel: document.getElementById('editDeviceModel').value,
+               repairtype: document.getElementById('editRepairType').value,
+               description: document.getElementById('editDescription').value,
+               servicedate: document.getElementById('editServiceDate').value
+            };
+
+            const { error } = await globalSupabase
+               .from('service_requests')
+               .update(updatedData)
+               .eq('id', currentEditingRecord.id);
+
+            if (error) throw error;
+
+            console.log('✅ Request updated successfully');
+            globalSuccessMessage.textContent = '✅ Service request updated successfully!';
+            globalSuccessMessage.style.display = 'block';
+            globalSuccessMessage.style.color = '#2e7d32';
+
+            closeEditModal();
+
+            // Refresh the display
+            const userEmail = currentEditingRecord.email;
+            const { data } = await globalSupabase
+               .from('service_requests')
+               .select('*')
+               .eq('email', userEmail)
+               .order('id', { ascending: false });
+
+            displayUserRequests(data);
+
+            setTimeout(() => {
+               globalSuccessMessage.style.display = 'none';
+            }, 3000);
+         } catch (error) {
+            globalSuccessMessage.textContent = '❌ Failed to update: ' + error.message;
+            globalSuccessMessage.style.display = 'block';
+            globalSuccessMessage.style.color = '#c62828';
+            console.error('Error updating record:', error);
+         }
+      }
+
+      async function deleteUserRequest(recordId) {
+         try {
+            if (!confirm('Are you sure you want to delete this service request?')) {
+               return;
+            }
+
+            const { error } = await globalSupabase
+               .from('service_requests')
+               .delete()
+               .eq('id', recordId);
+
+            if (error) throw error;
+
+            console.log('✅ Request deleted successfully');
+            globalSuccessMessage.textContent = '✅ Service request deleted!';
+            globalSuccessMessage.style.display = 'block';
+            globalSuccessMessage.style.color = '#2e7d32';
+
+            // Refresh display
+            const emailInput = document.getElementById('userEmail');
+            if (emailInput.value) {
+               currentEditingRecord = null;
+               const userEmail = emailInput.value;
+               const { data } = await globalSupabase
+                  .from('service_requests')
+                  .select('*')
+                  .eq('email', userEmail)
+                  .order('id', { ascending: false });
+
+               if (data.length === 0) {
+                  document.getElementById('dataContainer').innerHTML = '<p class="no-data">No more service requests.</p>';
+               } else {
+                  displayUserRequests(data);
+               }
+            }
+
+            setTimeout(() => {
+               globalSuccessMessage.style.display = 'none';
+            }, 3000);
+         } catch (error) {
+            globalSuccessMessage.textContent = '❌ Failed to delete: ' + error.message;
+            globalSuccessMessage.style.display = 'block';
+            globalSuccessMessage.style.color = '#c62828';
+            console.error('Error deleting record:', error);
+         }
+      }
+   </script>
+</body>
+</html>
