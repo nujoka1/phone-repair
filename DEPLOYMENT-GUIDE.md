@@ -109,7 +109,7 @@ git commit -m "Add PhoneHub to Supabase integration"
 git remote add origin https://github.com/nujoka1/phone-repair.git
 
 # Push to GitHub
-git push -u origin main
+git push -u origin master
 ```
 
 ### 4.2 Deploy to Vercel
@@ -252,7 +252,6 @@ Vercel (Frontend)
 
 3. **Add Admin Dashboard** - View all requests with analytics
    - Create admin-only page with Supabase client
-
 4. **Add Real-time Updates** - See submissions as they happen
    ```javascript
    supabase
