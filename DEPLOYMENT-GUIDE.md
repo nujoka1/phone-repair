@@ -247,12 +247,15 @@ Vercel (Frontend)
    });
    ```
 
-2. **Add Email Notifications** - Send confirmation emails
-   - Use Supabase Functions + SendGrid/Resend API
+2. **Add Email Notifications** - Send confirmation emails ← Using Supabase Functions + SendGrid/Resend API
+   - Configure SendGrid or Resend API keys in Supabase Functions
+   - Trigger email on form submission via webhook
 
-3. **Add Admin Dashboard** - View all requests with analytics
+3. **Add Admin Dashboard** - View all requests with analytics ← For analytics
    - Create admin-only page with Supabase client
-4. **Add Real-time Updates** - See submissions as they happen
+   - Add charts, filters, and export functionality
+   
+4. **Add Real-time Updates** - See submissions as they happen ← With postgres_changes listener
    ```javascript
    supabase
      .channel('public:service_requests')
