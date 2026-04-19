@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhoneHub Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="phone-repair.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #ff6b35;
+            --secondary-color: #004e89;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-dark: #1a1a1a;
+            --text-light: #666666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-box h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+            font-size: 28px;
+        }
+
+        .login-box .subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #e55a24;
+        }
+
+        .login-error {
+            color: var(--danger-color);
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .dashboard-container {
+            display: none;
+            min-height: 100vh;
+            background: var(--light-bg);
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .admin-header .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .admin-header .logo-text {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .admin-content {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .stat-card.total {
+            border-left-color: #667eea;
+        }
+
+        .stat-card.device {
+            border-left-color: #f39c12;
+        }
+
+        .stat-card.repair {
+            border-left-color: #2ecc71;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .stat-subtitle {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .filters-section h3 {
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+            font-size: 16px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        .filter-btn, .export-btn {
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: #e55a24;
+        }
+
+        .export-btn {
+            background: var(--success-color);
+        }
+
+        .export-btn:hover {
+            background: #27ae60;
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container h3 {
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            font-size: 16px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        .requests-table-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .requests-table-section h3 {
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            font-size: 16px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .requests-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .requests-table thead {
+            background: var(--light-bg);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .requests-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--secondary-color);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .requests-table th:hover {
+            background: #f0f0f0;
+        }
+
+        .requests-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .requests-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .requests-table tbody tr:hover {
+            background: var(--light-bg);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-new {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination-btn {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            background: white;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .pagination-btn:hover {
+            background: var(--light-bg);
+        }
+
+        .pagination-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid var(--light-bg);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        .empty-state svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .realtime-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--success-color);
+            background: rgba(46, 204, 113, 0.1);
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin-left: 15px;
+        }
+
+        .realtime-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .new-request-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header .header-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-row {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                min-width: 100%;
+            }
+
+            .requests-table {
+                font-size: 12px;
+            }
+
+            .requests-table th,
+            .requests-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="loginSection" class="login-container">
+        <div class="login-box">
+            <h1>📱 PhoneHub</h1>
+            <p class="subtitle">Admin Dashboard</p>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="adminPassword">Admin Password</label>
+                    <input type="password" id="adminPassword" placeholder="Enter admin password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+                <div id="loginError" class="login-error"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="dashboard-container">
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="header-info">
+                <div>
+                    <h1>Admin Dashboard</h1>
+                    <p class="logo-text">PhoneHub Service Management</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div class="realtime-indicator">
+                        <div class="realtime-dot"></div>
+                        Live Updates
+                    </div>
+                    <button class="logout-btn" onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card total">
+                    <div class="stat-label">Total Requests</div>
+                    <div class="stat-value" id="totalRequests">0</div>
+                    <div class="stat-subtitle">All service requests</div>
+                </div>
+                <div class="stat-card device">
+                    <div class="stat-label">Top Device Type</div>
+                    <div class="stat-value" id="topDeviceType">-</div>
+                    <div class="stat-subtitle" id="topDeviceCount">0 requests</div>
+                </div>
+                <div class="stat-card repair">
+                    <div class="stat-label">Top Repair Type</div>
+                    <div class="stat-value" id="topRepairType">-</div>
+                    <div class="stat-subtitle" id="topRepairCount">0 requests</div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <h3>Filter Results</h3>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="filterFromDate">From Date</label>
+                        <input type="date" id="filterFromDate">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterToDate">To Date</label>
+                        <input type="date" id="filterToDate">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterDeviceType">Device Type</label>
+                        <select id="filterDeviceType">
+                            <option value="">All Types</option>
+                            <option value="iPhone">iPhone</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Google">Google</option>
+                            <option value="OnePlus">OnePlus</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <button class="filter-btn" onclick="applyFilters()">Apply Filters</button>
+                    <button class="export-btn" onclick="exportToCSV()">Export CSV</button>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <h3>Requests by Device Type</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="deviceChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <h3>Requests by Repair Type</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="repairChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Requests Table -->
+            <div class="requests-table-section">
+                <h3>Recent Service Requests</h3>
+                <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <p>No requests found</p>
+                </div>
+                <div class="table-responsive">
+                    <table class="requests-table">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('firstname')">Name ↕</th>
+                                <th onclick="sortTable('email')">Email ↕</th>
+                                <th onclick="sortTable('tel')">Phone ↕</th>
+                                <th onclick="sortTable('devicetype')">Device ↕</th>
+                                <th>Device Model</th>
+                                <th onclick="sortTable('repairtype')">Repair ↕</th>
+                                <th>Description</th>
+                                <th onclick="sortTable('servicedate')">Service Date ↕</th>
+                                <th onclick="sortTable('submitted_at')">Submitted ↕</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestsTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Admin Dashboard Password (Hardcoded)
+        const ADMIN_PASSWORD = 'PhoneHub2024'; // Change this to your desired password
+        
+        // Supabase Configuration (from first-supabase.html)
+        const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        
+        // Initialize Supabase
+        const { createClient } = window.supabase;
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // State Management
+        let allRequests = [];
+        let filteredRequests = [];
+        let currentPage = 1;
+        let itemsPerPage = 15;
+        let sortField = 'submitted_at';
+        let sortOrder = 'desc';
+        let realtimeSubscription = null;
+        let deviceChart = null;
+        let repairChart = null;
+
+        // Login Handler
+        function handleLogin(event) {
+            event.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+            const errorEl = document.getElementById('loginError');
+
+            if (password === ADMIN_PASSWORD) {
+                localStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                loadDashboardData();
+                setupRealtimeListener();
+            } else {
+                errorEl.textContent = 'Invalid password. Please try again.';
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        // Logout Handler
+        function handleLogout() {
+            localStorage.removeItem('adminLoggedIn');
+            if (realtimeSubscription) {
+                supabase.removeChannel(realtimeSubscription);
+            }
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'flex';
+            document.getElementById('adminPassword').value = '';
+            location.reload();
+        }
+
+        // Check if already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                loadDashboardData();
+                setupRealtimeListener();
+            }
+        });
+
+        // Load Dashboard Data
+        async function loadDashboardData() {
+            try {
+                document.getElementById('loadingSpinner').style.display = 'block';
+                
+                // Fetch all requests
+                const { data, error } = await supabase
+                    .from('service_requests')
+                    .select('*')
+                    .order('submitted_at', { ascending: false });
+
+                if (error) throw error;
+
+                allRequests = data || [];
+                filteredRequests = [...allRequests];
+                updateDashboard();
+                
+                document.getElementById('loadingSpinner').style.display = 'none';
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loadingSpinner').style.display = 'none';
+                alert('Error loading dashboard data. Check console.');
+            }
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            updateStats();
+            updateCharts();
+            displayRequests();
+        }
+
+        // Update Stats
+        function updateStats() {
+            const total = filteredRequests.length;
+            document.getElementById('totalRequests').textContent = total;
+
+            // Top device type
+            const deviceCounts = {};
+            filteredRequests.forEach(req => {
+                deviceCounts[req.devicetype] = (deviceCounts[req.devicetype] || 0) + 1;
+            });
+            const topDevice = Object.entries(deviceCounts).sort((a, b) => b[1] - a[1])[0];
+            if (topDevice) {
+                document.getElementById('topDeviceType').textContent = topDevice[0];
+                document.getElementById('topDeviceCount').textContent = `${topDevice[1]} requests`;
+            }
+
+            // Top repair type
+            const repairCounts = {};
+            filteredRequests.forEach(req => {
+                repairCounts[req.repairtype] = (repairCounts[req.repairtype] || 0) + 1;
+            });
+            const topRepair = Object.entries(repairCounts).sort((a, b) => b[1] - a[1])[0];
+            if (topRepair) {
+                document.getElementById('topRepairType').textContent = topRepair[0];
+                document.getElementById('topRepairCount').textContent = `${topRepair[1]} requests`;
+            }
+        }
+
+        // Update Charts
+        function updateCharts() {
+            // Device Type Chart
+            const deviceCounts = {};
+            filteredRequests.forEach(req => {
+                deviceCounts[req.devicetype] = (deviceCounts[req.devicetype] || 0) + 1;
+            });
+
+            const deviceCtx = document.getElementById('deviceChart').getContext('2d');
+            if (deviceChart) deviceChart.destroy();
+            deviceChart = new Chart(deviceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(deviceCounts),
+                    datasets: [{
+                        data: Object.values(deviceCounts),
+                        backgroundColor: [
+                            '#667eea', '#764ba2', '#f39c12', '#2ecc71', '#e74c3c'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Repair Type Chart
+            const repairCounts = {};
+            filteredRequests.forEach(req => {
+                repairCounts[req.repairtype] = (repairCounts[req.repairtype] || 0) + 1;
+            });
+
+            const repairCtx = document.getElementById('repairChart').getContext('2d');
+            if (repairChart) repairChart.destroy();
+            repairChart = new Chart(repairCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(repairCounts),
+                    datasets: [{
+                        label: 'Number of Requests',
+                        data: Object.values(repairCounts),
+                        backgroundColor: '#667eea'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // Display Requests Table
+        function displayRequests() {
+            const tbody = document.getElementById('requestsTableBody');
+            const emptyState = document.getElementById('emptyState');
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = filteredRequests.slice(start, end);
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+                tbody.innerHTML = pageData.map(req => `
+                    <tr>
+                        <td>${req.firstname}</td>
+                        <td>${req.email}</td>
+                        <td>${req.tel}</td>
+                        <td>${req.devicetype}</td>
+                        <td>${req.devicemodel}</td>
+                        <td>${req.repairtype}</td>
+                        <td>${req.description.substring(0, 30)}...</td>
+                        <td>${new Date(req.servicedate).toLocaleDateString()}</td>
+                        <td>${new Date(req.submitted_at).toLocaleString()}</td>
+                    </tr>
+                `).join('');
+            }
+
+            updatePagination();
+        }
+
+        // Update Pagination
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+                btn.textContent = i;
+                btn.onclick = () => {
+                    currentPage = i;
+                    displayRequests();
+                };
+                pagination.appendChild(btn);
+            }
+        }
+
+        // Sort Table
+        function sortTable(field) {
+            if (sortField === field) {
+                sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortField = field;
+                sortOrder = 'asc';
+            }
+
+            filteredRequests.sort((a, b) => {
+                let aVal = a[field];
+                let bVal = b[field];
+
+                if (typeof aVal === 'string') {
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+
+                return sortOrder === 'asc' ? (aVal > bVal ? 1 : -1) : (aVal < bVal ? 1 : -1);
+            });
+
+            currentPage = 1;
+            displayRequests();
+        }
+
+        // Apply Filters
+        function applyFilters() {
+            const fromDate = document.getElementById('filterFromDate').value;
+            const toDate = document.getElementById('filterToDate').value;
+            const deviceType = document.getElementById('filterDeviceType').value;
+
+            filteredRequests = allRequests.filter(req => {
+                let matches = true;
+
+                if (fromDate) {
+                    matches = matches && new Date(req.submitted_at) >= new Date(fromDate);
+                }
+
+                if (toDate) {
+                    const toDateObj = new Date(toDate);
+                    toDateObj.setHours(23, 59, 59, 999);
+                    matches = matches && new Date(req.submitted_at) <= toDateObj;
+                }
+
+                if (deviceType) {
+                    matches = matches && req.devicetype === deviceType;
+                }
+
+                return matches;
+            });
+
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            if (filteredRequests.length === 0) {
+                alert('No data to export');
+                return;
+            }
+
+            const headers = ['Name', 'Email', 'Phone', 'Device Type', 'Device Model', 'Repair Type', 'Description', 'Service Date', 'Submitted At'];
+            const csv = [headers.join(',')];
+
+            filteredRequests.forEach(req => {
+                const row = [
+                    `"${req.firstname}"`,
+                    `"${req.email}"`,
+                    `"${req.tel}"`,
+                    `"${req.devicetype}"`,
+                    `"${req.devicemodel}"`,
+                    `"${req.repairtype}"`,
+                    `"${req.description.replace(/"/g, '""')}"`,
+                    new Date(req.servicedate).toLocaleDateString(),
+                    new Date(req.submitted_at).toLocaleString()
+                ];
+                csv.push(row.join(','));
+            });
+
+            const csvContent = csv.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `phonehub-requests-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+
+        // Real-time Listener (Phase 3 - Ready)
+        function setupRealtimeListener() {
+            try {
+                realtimeSubscription = supabase
+                    .channel('service_requests_changes')
+                    .on(
+                        'postgres_changes',
+                        { event: 'INSERT', schema: 'public', table: 'service_requests' },
+                        (payload) => {
+                            console.log('New request received:', payload);
+                            allRequests.unshift(payload.new);
+                            filteredRequests.unshift(payload.new);
+                            showNewRequestAlert(payload.new);
+                            updateDashboard();
+                            playNotificationSound();
+                        }
+                    )
+                    .subscribe();
+            } catch (error) {
+                console.error('Error setting up real-time listener:', error);
+            }
+        }
+
+        // Show New Request Alert
+        function showNewRequestAlert(request) {
+            const alert = document.createElement('div');
+            alert.className = 'new-request-alert';
+            alert.textContent = `📩 New request from ${request.firstname}!`;
+            document.body.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Play Notification Sound (Optional)
+        function playNotificationSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        // Browser Notification (Phase 3 - Ready)
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        function sendBrowserNotification(title, options) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, options);
+            }
+        }
+
+        // Request notification permission on load
+        window.addEventListener('DOMContentLoaded', () => {
+            requestNotificationPermission();
+        });
+    </script>
+</body>
+</html>
