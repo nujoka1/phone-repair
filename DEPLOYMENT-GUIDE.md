@@ -247,9 +247,10 @@ Vercel (Frontend)
    });
    ```
 
-2. **Add Email Notifications** - Send confirmation emails ← Using Supabase Functions + SendGrid/Resend API
-   - Configure SendGrid or Resend API keys in Supabase Functions
-   - Trigger email on form submission via webhook
+2. **Add Email Notifications** - Send confirmation emails ← Using Supabase Functions + Resend API
+   - ✅ **Implementation in progress** - See [EMAIL_SETUP.md](EMAIL_SETUP.md)
+   - Supabase Edge Function handles email sending
+   - Database trigger sends to customer + admin automatically
 
 3. **Add Admin Dashboard** - View all requests with analytics ← For analytics
    - Create admin-only page with Supabase client
